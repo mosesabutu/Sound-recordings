@@ -1,7 +1,7 @@
 /** @format */
 import { useEffect, useReducer, useState } from "react";
 
-import { auth, db } from "./Config/fireBaseConfig";
+import { auth, db, storage } from "./Config/fireBaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   getDocs,
@@ -11,6 +11,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 const initialFormDetails = {
   movieName: "",
   release_year: 1901,
@@ -37,7 +38,7 @@ export default function Blog() {
   const moviesCollectionRef = collection(db, "Movies"); //The collection we get from Firestore
   const [updatedMovie, setUpdatedMovie] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState();
-
+  const [fileUpload, setFileUpload] = useState("");
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -56,6 +57,17 @@ export default function Blog() {
     setUpdatedMovie("");
   };
 
+  const uploadFile = async () => {
+    if (!fileUpload) return;
+
+    const filesFolder = ref(storage, `projectFiles/${fileUpload?.name}`);
+    try {
+      await uploadBytes(filesFolder, fileUpload);
+      setFileUpload("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   async function handleForm(e) {
     e.preventDefault();
     try {
@@ -101,7 +113,7 @@ export default function Blog() {
       console.log(error);
     }
   };
-  console.log(String(isLoggedIn));
+  // console.log(String(isLoggedIn));
 
   return (
     <div>
@@ -148,6 +160,17 @@ export default function Blog() {
             <button onClick={() => upDateMovie(movie.id)}>Update</button>
           </div>
         ))}
+      </div>
+      <div>
+        {/* <label htmlFor="file">Select File</label> */}
+        <input
+          id="file"
+          type="file"
+          onChange={(e) => {
+            setFileUpload(e.target.files[0]); //We are taking thw first File uploaded
+          }}
+        />
+        <button onClick={uploadFile}>Submit File</button>
       </div>
     </div>
   );
