@@ -3,6 +3,7 @@ import { useEffect, useReducer, useState } from "react";
 
 import { auth, db, storage } from "./Config/fireBaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import { v4 } from "uuid";
 import {
   getDocs,
   collection,
@@ -11,7 +12,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 const initialFormDetails = {
   movieName: "",
   release_year: 1901,
@@ -39,6 +40,7 @@ export default function Blog() {
   const [updatedMovie, setUpdatedMovie] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState();
   const [fileUpload, setFileUpload] = useState("");
+  const [imageList, setImageList] = useState([]);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -56,17 +58,36 @@ export default function Blog() {
     await updateDoc(movieDoc, { movieName: updatedMovie });
     setUpdatedMovie("");
   };
-
+  const imagesListRef = ref(storage, "projectFiles/");
   const uploadFile = async () => {
     if (!fileUpload) return;
-    const filesFolder = ref(storage, `projectFiles/${fileUpload?.name}`);
+    const filesFolder = ref(storage, `projectFiles/${fileUpload.name + v4()} `);
     try {
-      await uploadBytes(filesFolder, fileUpload);
+      await uploadBytes(filesFolder, fileUpload).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          setImageList((prev) => [...prev, url]);
+        });
+      });
       setFileUpload("");
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    try {
+      listAll(imagesListRef).then((response) => {
+        response.items.forEach((item) => {
+          getDownloadURL(item).then((url) => {
+            setImageList((prev) => [...prev, url]);
+            console.log(imageList);
+          });
+        });
+      });
+    } catch (e) {
+      console.table(e);
+    }
+  }, []);
   async function handleForm(e) {
     e.preventDefault();
     try {
@@ -166,10 +187,25 @@ export default function Blog() {
           id="file"
           type="file"
           onChange={(e) => {
-            setFileUpload(e.target.files[0]); //We are taking thw first File uploaded
+            setFileUpload(e.target.files[0]); //We are taking the first File uploaded
           }}
         />
         <button onClick={uploadFile}>Submit File</button>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row", width: "80dvw" }}>
+        {imageList.map((url) => {
+          return (
+            <div key={url}>
+              <img
+                style={{
+                  width: "300px",
+                  margin: "10px",
+                }}
+                src={url}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
