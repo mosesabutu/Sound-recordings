@@ -59,7 +59,6 @@ export default function Blog() {
 
   const uploadFile = async () => {
     if (!fileUpload) return;
-
     const filesFolder = ref(storage, `projectFiles/${fileUpload?.name}`);
     try {
       await uploadBytes(filesFolder, fileUpload);
