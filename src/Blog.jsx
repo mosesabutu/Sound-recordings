@@ -47,8 +47,9 @@ export default function Blog() {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
         setIsLoggedIn(user.uid);
+        alert("Login Succesful");
       } else {
-        console.log("OtiJalo");
+        alert("OtiJalo");
       }
     });
   }, []);
@@ -66,6 +67,7 @@ export default function Blog() {
       await uploadBytes(filesFolder, fileUpload).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((url) => {
           setImageList((prev) => [...prev, url]);
+          alert("ImageUploaded");
         });
       });
       setFileUpload("");
@@ -80,7 +82,7 @@ export default function Blog() {
         response.items.forEach((item) => {
           getDownloadURL(item).then((url) => {
             setImageList((prev) => [...prev, url]);
-            console.log(imageList);
+            // console.log(imageList);
           });
         });
       });
