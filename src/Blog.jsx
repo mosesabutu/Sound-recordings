@@ -1,6 +1,6 @@
 /** @format */
 import { useEffect, useReducer, useState } from "react";
-
+import { Toaster, toast } from "sonner";
 import { auth, db, storage } from "./Config/fireBaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { v4 } from "uuid";
@@ -47,9 +47,11 @@ export default function Blog() {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
         setIsLoggedIn(user.uid);
-        alert("Login Succesful");
+        toast.success("Login Succesful");
+        // window.location.reload();
       } else {
-        alert("OtiJalo");
+        // window.location.reload();
+        toast.info("LogOut Succesful");
       }
     });
   }, []);
@@ -57,6 +59,7 @@ export default function Blog() {
   const upDateMovie = async (id) => {
     const movieDoc = doc(db, "Movies", id);
     await updateDoc(movieDoc, { movieName: updatedMovie });
+    toast.success("Movie Updated");
     setUpdatedMovie("");
   };
   const imagesListRef = ref(storage, "projectFiles/");
@@ -67,7 +70,7 @@ export default function Blog() {
       await uploadBytes(filesFolder, fileUpload).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((url) => {
           setImageList((prev) => [...prev, url]);
-          alert("ImageUploaded");
+          toast.success("ImageUploaded");
         });
       });
       setFileUpload("");
@@ -139,6 +142,7 @@ export default function Blog() {
 
   return (
     <div>
+      <Toaster richColors />
       <form
         onSubmit={handleForm}
         onChange={formChange}
@@ -184,6 +188,9 @@ export default function Blog() {
         ))}
       </div>
       <div>
+        <br />
+        <br />
+
         {/* <label htmlFor="file">Select File</label> */}
         <input
           id="file"
@@ -194,10 +201,12 @@ export default function Blog() {
         />
         <button onClick={uploadFile}>Submit File</button>
       </div>
-      <div style={{ display: "flex", flexDirection: "row", width: "80dvw" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", maxWidth: "50vw" }}
+      >
         {imageList.map((url) => {
           return (
-            <div key={url}>
+            <div key={url + v4()}>
               <img
                 style={{
                   width: "300px",
