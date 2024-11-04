@@ -1,9 +1,11 @@
-import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { NavLink } from "react-router-dom";
 
 const getPosts = async (page) => {
-  console.log(page);
+  // console.log(page);
   const res = await fetch(
     `https://jsonplaceholder.typicode.com/posts?_page=${page.pageParam}`
   );
@@ -12,6 +14,7 @@ const getPosts = async (page) => {
 };
 
 export default function InfiniteScrollWithQuery() {
+  const { ref, inView } = useInView();
   const {
     isPending,
     error,
@@ -30,8 +33,13 @@ export default function InfiniteScrollWithQuery() {
     },
   });
 
+  useEffect(() => {
+    console.log("Is it inview", inView);
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
   const post = data ? data.pages.flatMap((page) => page) : [];
-  data && console.log(data);
 
   if (isPending) {
     return (
@@ -77,14 +85,10 @@ export default function InfiniteScrollWithQuery() {
       <div className="flex items-center justify-center gap-2">
         {hasNextPage && (
           <button
+            ref={ref}
             disabled={isFetchingNextPage}
-            onClick={() => {
-              fetchNextPage();
-            }}
-            className="px-3 py-1 bg-blue-500 rounded-md text-white font-bold"
-          >
-            Load More
-          </button>
+            className="h-4 w-full rounded-md bg-blue-200"
+          ></button>
         )}
         {/* <p>Current Page: {page}</p> */}
       </div>
