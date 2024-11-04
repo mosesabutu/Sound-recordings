@@ -10,6 +10,7 @@ import WithQuery from "./withQuery";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Posts from "./Posts";
 import InfiniteScrollWithQuery from "./InfiniteScrollWithQuery";
+import Tasks from "./Tasks";
 
 export default function Main() {
   const route = createBrowserRouter(
@@ -22,6 +23,7 @@ export default function Main() {
           path="infiniteScrollWithQuery"
           element={<InfiniteScrollWithQuery />}
         />
+        <Route path="Tasks" element={<Tasks />} />
       </Route>
     )
   );

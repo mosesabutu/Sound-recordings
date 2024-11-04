@@ -1,6 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { NavLink } from "react-router-dom";
 
