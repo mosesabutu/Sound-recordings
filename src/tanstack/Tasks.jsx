@@ -1,9 +1,10 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 
 const fetchTasks = async () => {
   const res = await fetch("http://localhost:3000/tasks");
-  if (!res.ok) throw new Error("Something went wrong!");
+  if (!res.ok) throw new Error("Sorry, Something went wrong!");
   return res.json();
 };
 
@@ -15,15 +16,18 @@ const Tasks = () => {
   const { data, isPending, isError } = useQuery({
     queryKey: ["tasks"],
     queryFn: fetchTasks,
+    staleTime: 300000,
   });
 
   //CONVERT INTO MUTATION
   const handleDelete = async (id) => {
-    const res = await fetch(`http://localhost:3000/deletetask/${id}`);
+    // const res =
+    await fetch(`http://localhost:3000/deletetask/${id}`);
+    queryClient.invalidateQueries({ queryKey: ["tasks"] });
   };
 
   //CONVERT INTO MUTATION
-  const handleAdd = async () => {
+  const handleAdd = async ({ title, description, id, isComplete }) => {
     const res = await fetch("http://localhost:3000/addtask", {
       method: "POST",
       headers: {
@@ -36,19 +40,36 @@ const Tasks = () => {
 
   const addMutation = useMutation({
     mutationFn: handleAdd,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["tasks"]);
+    onMutate: async (newTask) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+      const previousTasks = queryClient.getQueryData(["tasks"]);
+      queryClient.setQueryData(["tasks"], (old) => {
+        return { tasks: [...old.tasks, newTask] };
+      });
+
+      return { previousTasks };
+    },
+
+    onError: (err, newTask, context) => {
+      queryClient.setQueryData(["tasks"], context.previousTasks);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       setDescription("");
       setTitle("");
     },
   });
+  // console.log(addMutation.variables);
 
   return (
     <div className="flex flex-col justify-center items-center max-w-[768px] mx-auto">
+      <NavLink to={"/"}>Go to withoutQuery</NavLink>
+
       <p>Adding a task: {JSON.stringify(addMutation.isPending)}</p>
       <div className="my-4">
         <h1 className="text-center font-bold text-2xl my-4">Add task</h1>
         <input
+          id={Math.random() * 44}
           type="text"
           value={title}
           placeholder="Enter task title"
@@ -56,6 +77,7 @@ const Tasks = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
         <input
+          id={Math.random() * 2}
           type="text"
           value={description}
           placeholder="Enter task description"
@@ -64,7 +86,14 @@ const Tasks = () => {
         />
         <button
           className="bg-blue-700 text-white font-bold px-4 py-2 rounded"
-          onClick={() => addMutation.mutate()}
+          onClick={() =>
+            addMutation.mutate({
+              title,
+              description,
+              id: Math.random() * 3,
+              isComplete: false,
+            })
+          }
         >
           Submit
         </button>
@@ -73,9 +102,15 @@ const Tasks = () => {
       <div className="w-full">
         <h1 className="text-center font-bold text-2xl my-4">Tasks</h1>
         {isError && (
-          <h1 className="text-center font-bold text-2xl my-4">
-            No tasks found! Something went wrong.
-          </h1>
+          <div className="text-center font-semibold text-2xl my-4">
+            <h1> Sorry, Something went wrong!</h1>
+            <button
+              className=" underline text-white"
+              onClick={() => window.location.reload()}
+            >
+              Please Try Again
+            </button>
+          </div>
         )}
         {isPending && (
           <h1 className="text-center font-bold text-2xl my-4">
@@ -102,6 +137,25 @@ const Tasks = () => {
               </div>
             );
           })}
+        {/* {addMutation.isPending && (
+          <div
+            key={addMutation.variables.id}
+            className="flex justify-between opacity-50 items-center w-100 bg-gray-800 px-4 py-3 rounded my-2"
+          >
+            <div className="bg-gray-800">
+              <h3 className="font-bold text-lg">
+                {addMutation.variables.title}
+              </h3>
+              <p>{addMutation.variables.description}</p>
+            </div>
+            <button
+              className="bg-red-700 text-white font-bold px-4 py-1 rounded"
+              onClick={() => handleDelete(addMutation.variables.id)}
+            >
+              Delete
+            </button>
+          </div>
+        )} */}
       </div>
     </div>
   );

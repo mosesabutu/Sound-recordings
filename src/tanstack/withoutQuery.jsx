@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
 export default function WithoutQuery() {
@@ -42,6 +43,8 @@ export default function WithoutQuery() {
   return (
     <div className="m-4 max-w-[600px] w-4/5 mx-auto">
       <NavLink to={"withQuery"}>Go to withQuery</NavLink>
+      <br />
+      <Link to={"/Tasks"}>Check Tasks </Link>
       <br />
       <NavLink to={"infiniteScrollWithQuery"}>
         Go to InfiniteScrollWithQuery

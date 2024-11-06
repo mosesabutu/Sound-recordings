@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const getPosts = async (page) => {
   const res = await fetch(
@@ -38,9 +38,7 @@ export default function WithQuery() {
     <div className="m-4 max-w-[600px] w-4/5 mx-auto">
       <NavLink to={"/"}>Go to withoutQuery</NavLink>
       <br />
-      <NavLink to={"infiniteScrollWithQuery"}>
-        Go to InfiniteScrollWithQuery
-      </NavLink>
+      <Link to={"/infiniteScrollWithQuery"}>Go to InfiniteScrollWithQuery</Link>
 
       <h1 className="text-3xl text-center my-8 font-bold text-gray-400">
         Post Data Page: {page}
