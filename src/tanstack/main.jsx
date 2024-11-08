@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Posts from "./Posts";
 import InfiniteScrollWithQuery from "./InfiniteScrollWithQuery";
 import Tasks from "./Tasks";
+import App from "../DragAndDrop/App";
 
 export default function Main() {
   const route = createBrowserRouter(
@@ -24,6 +25,7 @@ export default function Main() {
           element={<InfiniteScrollWithQuery />}
         />
         <Route path="Tasks" element={<Tasks />} />
+        <Route path="drag-and-drop-tutorial" element={<App />} />
       </Route>
     )
   );
