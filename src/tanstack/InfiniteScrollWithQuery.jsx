@@ -40,6 +40,39 @@ export default function InfiniteScrollWithQuery() {
   }, [inView]);
   const post = data ? data.pages.flatMap((page) => page) : [];
 
+  const middleIndex = Math.floor(post.length / 2);
+  const mappedData = post.map((res) => {
+    // console.log(middleIndex);
+
+    return (
+      <NavLink
+        to={`${res.id}`}
+        key={res.id}
+        className="p-4 rounded-lg block border border-gray-200 my-6 cursor-pointer hover:bg-gray-900"
+      >
+        <h2 className="font-bold text-lg mb-2 text-gray-400">
+          {res.title.charAt(0).toUpperCase() + res.title.slice(1)}
+        </h2>
+        <p className="text-gray-400">
+          {res.body.charAt(0).toUpperCase() + res.body.slice(1)}
+        </p>
+      </NavLink>
+    );
+  });
+  mappedData.splice(
+    middleIndex,
+    0,
+    <div key={"middleDiv"} className="flex items-center justify-center gap-2">
+      {hasNextPage && (
+        <button
+          ref={ref}
+          disabled={isFetchingNextPage}
+          className="h-4 w-full rounded-md "
+        ></button>
+      )}
+      {/* <p>Current Page: {page}</p> */}
+    </div>
+  );
   if (isPending) {
     return (
       <h1 className="text-3xl, text-center my-8 font-bold text-gray-50">
@@ -62,35 +95,7 @@ export default function InfiniteScrollWithQuery() {
       <h1 className="text-3xl text-center my-8 font-bold text-gray-400">
         Post Data
       </h1>
-      <div className={`${isFetching ? "bg-gray-300 opacity-50" : ""}`}>
-        {post &&
-          post.map((res) => {
-            return (
-              <NavLink
-                to={`${res.id}`}
-                key={res.id}
-                className="p-4 rounded-lg block border border-gray-200 my-6 cursor-pointer hover:bg-gray-900"
-              >
-                <h2 className="font-bold text-lg mb-2 text-gray-400">
-                  {res.title.charAt(0).toUpperCase() + res.title.slice(1)}
-                </h2>
-                <p className="text-gray-400">
-                  {res.body.charAt(0).toUpperCase() + res.body.slice(1)}
-                </p>
-              </NavLink>
-            );
-          })}
-      </div>
-      <div className="flex items-center justify-center gap-2">
-        {hasNextPage && (
-          <button
-            ref={ref}
-            disabled={isFetchingNextPage}
-            className="h-4 w-full rounded-md bg-blue-200"
-          ></button>
-        )}
-        {/* <p>Current Page: {page}</p> */}
-      </div>
+      <div className={`${isFetching ? " opacity-90" : ""}`}>{mappedData}</div>
     </div>
   );
 }
