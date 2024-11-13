@@ -96,6 +96,29 @@ export default function InfiniteScrollWithQuery() {
         Post Data
       </h1>
       <div className={`${isFetching ? " opacity-90" : ""}`}>{mappedData}</div>
+      <div className="flex items-center justify-center gap-2">
+        {hasNextPage && (
+          <button
+            ref={ref}
+            disabled={isFetchingNextPage}
+            className="h-4 w-full rounded-md"
+          ></button>
+        )}
+        {/* <p>Current Page: {page}</p> */}
+      </div>
+      {!hasNextPage && (
+        <div className="mx-auto text-3xl font-semibold flex flex-col items-center justify-center">
+          <h1>You're All Caught For Now</h1>
+          <button
+            className="bg-blue-500 text-center rounded-full m-4 text-2xl  font-bold p-4"
+            onClick={() => {
+              location.reload();
+            }}
+          >
+            Reload
+          </button>
+        </div>
+      )}
     </div>
   );
 }
