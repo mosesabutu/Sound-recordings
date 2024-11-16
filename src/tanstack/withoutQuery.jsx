@@ -48,6 +48,9 @@ export default function WithoutQuery() {
       <br />
       <Link to={"drag-and-drop-tutorial"}>Other stuff😒</Link>
       <br />
+      <Link to={"zustand"}>Zustand Tutorial</Link>
+
+      <br />
       <NavLink to={"infiniteScrollWithQuery"}>
         Go to InfiniteScrollWithQuery
       </NavLink>

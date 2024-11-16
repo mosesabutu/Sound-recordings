@@ -12,6 +12,7 @@ import Posts from "./Posts";
 import InfiniteScrollWithQuery from "./InfiniteScrollWithQuery";
 import Tasks from "./Tasks";
 import App from "../DragAndDrop/App";
+import AppZ from "../Zustand/App.jsx";
 
 export default function Main() {
   const route = createBrowserRouter(
@@ -26,6 +27,7 @@ export default function Main() {
         />
         <Route path="Tasks" element={<Tasks />} />
         <Route path="drag-and-drop-tutorial" element={<App />} />
+        <Route path="zustand" element={<AppZ />} />
       </Route>
     )
   );
