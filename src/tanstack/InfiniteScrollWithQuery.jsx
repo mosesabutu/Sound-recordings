@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 const getPosts = async (page) => {
   // console.log(page);

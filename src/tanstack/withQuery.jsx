@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link } from "react-router";
 
 const getPosts = async (page) => {
   const res = await fetch(

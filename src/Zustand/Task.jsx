@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { useStore } from "./Store";
 import { FaRegTrashCan } from "react-icons/fa6";
 
+//Test
+
 // const STATUS = "PLANNED";
 //This must be in all caps
 
@@ -24,6 +26,7 @@ export default function Task({ title, STATUS }) {
       <div className="flex justify-between">
         <div className=" my-2">
           <FaRegTrashCan
+            className="cursor-pointer"
             onClick={() => {
               deleteTasks(title);
             }}

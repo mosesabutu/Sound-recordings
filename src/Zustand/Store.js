@@ -1,8 +1,9 @@
+import { produce } from "immer";
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 const store = (set) => ({
-  tasks: [{ title: "Test Task", state: "PLANNED" }],
+  tasks: [],
   draggedTask: null,
 
   setDraggedTask: (title) => set({ draggedTask: title }),
@@ -12,7 +13,14 @@ const store = (set) => ({
     }));
   },
   addTasks: (title, state) => {
-    set((store) => ({ tasks: [...store.tasks, { title, state }] }));
+    set(
+      // (store) => ({ tasks: [...store.tasks, { title, state }] }),
+      produce((store) => {
+        store.tasks.push({ title, state });
+      }),
+      false,
+      "addTasks"
+    );
   },
   moveTask: (title, state) =>
     set((store) => ({
@@ -22,4 +30,15 @@ const store = (set) => ({
     })),
 });
 
-export const useStore = create(devtools(store));
+const log = (config) => (set, get, api) =>
+  config(
+    (...args) => {
+      set(...args);
+      // console.log(...args)
+    },
+    get,
+    api
+  );
+export const useStore = create(
+  log(persist(devtools(store), { name: "storeTasks" }))
+);

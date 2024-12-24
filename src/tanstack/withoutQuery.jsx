@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router";
 
 export default function WithoutQuery() {
   const [data, setData] = useState([]);
@@ -42,18 +41,21 @@ export default function WithoutQuery() {
   }
   return (
     <div className="m-4 max-w-[600px] w-4/5 mx-auto">
-      <NavLink to={"withQuery"}>Go to withQuery</NavLink>
-      <br />
-      <Link to={"/Tasks"}>Check Tasks </Link>
-      <br />
-      <Link to={"drag-and-drop-tutorial"}>Other stuff😒</Link>
-      <br />
-      <Link to={"zustand"}>Zustand Tutorial</Link>
-
-      <br />
-      <NavLink to={"infiniteScrollWithQuery"}>
-        Go to InfiniteScrollWithQuery
-      </NavLink>
+      <div>
+        <Link to={"withQuery"}>Go to withQuery</Link>
+        <br />
+        <Link to={"/Tasks"}>Check Tasks </Link>
+        <br />
+        <Link to={"drag-and-drop-tutorial"}>Other stuff😒</Link>
+        <br />
+        <Link to={"zustand"}>Zustand Tutorial</Link>
+        <br />
+        <Link to={"infiniteScrollWithQuery"}>
+          Go to InfiniteScrollWithQuery
+        </Link>
+        <br />
+        <Link to={"classComponent"}>Check Out Class Components</Link>
+      </div>
       <h1 className="text-3xl text-center my-8 font-bold text-gray-400">
         Post Data
       </h1>

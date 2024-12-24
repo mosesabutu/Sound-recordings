@@ -70,3 +70,6 @@
     @apply bg-background text-foreground;
   }
 }
+NavLink .active {
+  text-decoration-line: underline;
+}

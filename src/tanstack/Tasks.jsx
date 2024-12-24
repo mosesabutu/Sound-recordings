@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link } from "react-router";
 
 const fetchTasks = async () => {
   const res = await fetch("http://localhost:3000/tasks");
